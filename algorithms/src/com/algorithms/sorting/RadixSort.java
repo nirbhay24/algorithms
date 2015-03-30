@@ -1,52 +1,106 @@
 package com.algorithms.sorting;
 
-public class RadixSort{
+import java.util.Scanner;
 
-    public static void radixSort(int[] arr){
-        if(arr.length == 0)
-            return;
-        int[][] np = new int[arr.length][2];
-        int[] q = new int[0x100];
-        int i,j,k,l,f = 0;
-        for(k=0;k<4;k++){
-            for(i=0;i<(np.length-1);i++)
-                np[i][1] = i+1;
-            np[i][1] = -1;
-            for(i=0;i<q.length;i++)
-                q[i] = -1;
-            for(f=i=0;i<arr.length;i++){
-                j = ((0xFF<<(k<<3))&arr[i])>>(k<<3);
-                if(q[j] == -1)
-                    l = q[j] = f;
-                else{
-                    l = q[j];
-                    while(np[l][1] != -1)
-                        l = np[l][1];
-                    np[l][1] = f;
-                    l = np[l][1];
-                }
-                f = np[f][1];
-                np[l][0] = arr[i];
-                np[l][1] = -1;
-            }
-            for(l=q[i=j=0];i<0x100;i++)
-                for(l=q[i];l!=-1;l=np[l][1])
-                        arr[j++] = np[l][0];
+public class RadixSort{    /** Radix Sort function **/
+
+    public static void sort( int[] a)
+
+    {
+
+        int i, m = a[0], exp = 1, n = a.length;
+
+        int[] b = new int[10];
+
+        for (i = 1; i < n; i++)
+
+            if (a[i] > m)
+
+                m = a[i];
+
+        while (m / exp > 0)
+
+        {
+
+            int[] bucket = new int[10];
+
+ 
+
+            for (i = 0; i < n; i++)
+
+                bucket[(a[i] / exp) % 10]++;
+
+            for (i = 1; i < 10; i++)
+
+                bucket[i] += bucket[i - 1];
+
+            for (i = n - 1; i >= 0; i--)
+
+                b[--bucket[(a[i] / exp) % 10]] = a[i];
+
+            for (i = 0; i < n; i++)
+
+                a[i] = b[i];
+
+            exp *= 10;        
+
         }
-    }
 
-    public static void main(String[] args){
-        int i;
-        int[] arr = new int[15];
-        System.out.print("original: ");
-        for(i=0;i<arr.length;i++){
+    }    
+
+    /** Main method **/
+
+    public static void main(String[] args) 
+
+    {
+
+        @SuppressWarnings("resource")
+		Scanner scan = new Scanner( System.in );        
+
+        System.out.println("Radix Sort Test\n");
+
+        int n, i;
+
+        /** Accept number of elements **/
+
+        System.out.println("Enter number of integer elements");
+
+        n = scan.nextInt();
+
+        /** Create integer array on n elements **/
+
+        int arr[] = new int[ n ];
+
+        /** Accept elements **/
+
+ 
+        for (i = 0; i < n; i++)
+
             arr[i] = (int)(Math.random() * 1024);
-            System.out.print(arr[i] + " ");
-        }
-        radixSort(arr);
-        System.out.print("\nsorted: ");
-        for(i=0;i<arr.length;i++)
-            System.out.print(arr[i] + " ");
-        System.out.println("\nDone ;-)");
+
+        
+        System.out.println("\nElements before sorting ");        
+        printArray(n, arr);            
+
+        /** Call method sort **/
+
+        sort(arr);
+
+        /** Print sorted Array **/
+
+        System.out.println("\nElements after sorting ");        
+        printArray(n, arr);            
+
+        System.out.println();                     
+
     }
+
+	private static int printArray(int n, int[] arr) {
+		int i;
+		for (i = 0; i < n; i++)
+
+            System.out.print(arr[i]+" ");
+		return i;
+	}  
+    
 }
